@@ -1,7 +1,7 @@
 # Invoke-MECMAppInstall
 
 # Description
-A function that can remotely invoke the installation or uninstallation of a deployed MECM application. Relies on WMI calls, so does not have any special prerequisites. Supports wildcards in the `AppName` parameter.
+A function that can remotely invoke the installation or uninstallation of a deployed MECM application. Relies on WMI calls, so requires admin on the target computer(s). Supports wildcards in the `AppName` parameter.
 
 If multiple applications are returned by a wildcard search, this command will fail.
 
