@@ -16,8 +16,8 @@ Begin {
     # Ensure that a supported type was passed
     if ($Computer.GetType() -notin 
         [String],
-        [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject],
-        [Microsoft.ActiveDirectory.Management.ADComputer]) {
+        [Microsoft.ActiveDirectory.Management.ADComputer],
+        [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]) {
         throw "Unsupported argument type passed to parameter $Computer. The parameter must be of type [String],[Microsoft.ActiveDirectory.Management.ADComputer], or [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]"
     }
     Write-Verbose "Computer type is $($Computer.GetType())"
