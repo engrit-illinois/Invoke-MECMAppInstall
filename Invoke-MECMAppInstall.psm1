@@ -1,3 +1,7 @@
+$DEFAULT_PREFIX = "UIUC-ENGR-"
+$DEFAULT_SITE_CODE = "MP0"
+$DEFAULT_PROVIDER = "sccmcas.ad.uillinois.edu"
+
 Function Connect-ToMECM {
     [CmdletBinding(SupportsShouldProcess)]
     param(
