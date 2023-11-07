@@ -1,3 +1,25 @@
+Function Connect-ToMECM {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [string]$Prefix,
+		[string]$SiteCode,
+		[string]$Provider,
+        [string]$CMPSModulePath
+    )
+
+    Write-Verbose "Preparing connection to MECM..."
+    $initParams = @{}
+    if($null -eq (Get-Module ConfigurationManager)) {
+        # The ConfigurationManager Powershell module switched filepaths at some point around CB 18##
+        # So you may need to modify this to match your local environment
+        Import-Module $CMPSModulePath @initParams -Scope Global
+    }
+    if(($null -eq (Get-PSDrive -Name $SiteCode -PSProvider CMSite -ErrorAction SilentlyContinue))) {
+        New-PSDrive -Name $SiteCode -PSProvider CMSite -Root $Provider @initParams
+    }
+    Set-Location "$($SiteCode):\" @initParams
+    Write-Verbose "Done prepping connection to MECM."
+}
 
 Function Invoke-MECMAppInstall
 {
@@ -13,27 +35,7 @@ Function Invoke-MECMAppInstall
  
 Begin {
 
-    # Ensure that a supported type was passed
-    if ($Computer.GetType() -notin 
-        [String],
-        [Microsoft.ActiveDirectory.Management.ADComputer],
-        [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]) {
-        throw "Unsupported argument type passed to parameter $Computer. The parameter must be of type [String],[Microsoft.ActiveDirectory.Management.ADComputer], or [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]"
-    }
-    Write-Verbose "Computer type is $($Computer.GetType())"
-    if ($Computer.GetType() -eq [String]) {
-        $Name = $Computer
-        Write-Verbose "Setting Name to $($Computer)"
-    }elseif($Computer.GetType() -eq [Microsoft.ActiveDirectory.Management.ADComputer]) {
-        $Name = $Computer | Select-Object -ExpandProperty Name
-        Write-Verbose "Setting Name to $($Computer | Select-Object -ExpandProperty Name)"
-    }
-    elseif($Computer.GetType() -eq [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]) {
-        $Name = $Computer | Select-Object -ExpandProperty Name
-        Write-Verbose "Setting Name to $($Computer | Select-Object -ExpandProperty Name)"
-    }
-    
-    Write-Verbose "Name is $Name"
+        $myPWD = $PWD.Path
 
     $Reachable = 0
     if(Test-Connection $Name -Count 1 -Quiet){
