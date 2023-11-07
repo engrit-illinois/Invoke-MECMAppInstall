@@ -33,40 +33,73 @@ Function Invoke-MECMAppInstall
          [String][Parameter(Mandatory=$True, Position=3)] $Method
     )
  
-Begin {
+    Begin {
 
         $myPWD = $PWD.Path
 
-    $Reachable = 0
-    if(Test-Connection $Name -Count 1 -Quiet){
-        $Reachable = 1
-        $Application = (Get-CimInstance -ClassName CCM_Application -Namespace "root\ccm\clientSDK" -ComputerName $Name | Where-Object {$_.Name -like $AppName})
+        if($null -eq (Get-Module ConfigurationManager)){
+            Connect-ToMECM
+        }
+        if($null -eq (Get-Module ActiveDirectory)){
+            Import-Module ActiveDirectory
+        }
 
-        if($Application.Count -ne 1){
-            throw "Either 0 or more than 1 application was found matching $($AppName). This cmdlet is only designed for single applications."
+        # Ensure that a supported type was passed
+        if ($Computer.GetType() -notin 
+            [String],
+            [Microsoft.ActiveDirectory.Management.ADComputer],
+            [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]) {
+            throw "Unsupported argument type passed to parameter $Computer. The parameter must be of type [String],[Microsoft.ActiveDirectory.Management.ADComputer], or [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]"
         }
- 
-        $Arguments = @{
-        EnforcePreference = [UINT32] 0
-        Id = "$($Application.id)"
-        IsMachineTarget = $Application.IsMachineTarget
-        IsRebootIfNeeded = $False
-        Priority = 'High'
-        Revision = "$($Application.Revision)"
+        Write-Verbose "Computer is $Computer"
+        Write-Verbose "Computer type is $($Computer.GetType())"
+        if ($Computer.GetType() -eq [String]) {
+            $Name = $Computer
+            Write-Verbose "Setting Name to $($Computer)"
+        }elseif($Computer.GetType() -eq [Microsoft.ActiveDirectory.Management.ADComputer]) {
+            $Name = $Computer | Select-Object -ExpandProperty Name
+            Write-Verbose "Setting Name to $($Computer | Select-Object -ExpandProperty Name)"
         }
-    } else {
-        Write-Error "Could not ping $Name" -ErrorAction Continue
+        elseif($Computer.GetType() -eq [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]) {
+            $Name = $Computer | Select-Object -ExpandProperty Name
+            Write-Verbose "Setting Name to $($Computer | Select-Object -ExpandProperty Name)"
+        }
+        
+        Write-Verbose "Name is $Name"
+
+        $Reachable = 0
+        if(Test-Connection $Name -Count 1 -Quiet){
+            $Reachable = 1
+            $Application = (Get-CimInstance -ClassName CCM_Application -Namespace "root\ccm\clientSDK" -ComputerName $Name | Where-Object {$_.Name -like $AppName})
+
+            if($Application.Count -ne 1){
+                throw "Either 0 or more than 1 application was found matching $($AppName). This cmdlet is only designed for single applications."
+            }
+    
+            $Arguments = @{
+            EnforcePreference = [UINT32] 0
+            Id = "$($Application.id)"
+            IsMachineTarget = $Application.IsMachineTarget
+            IsRebootIfNeeded = $False
+            Priority = 'High'
+            Revision = "$($Application.Revision)"
+            }
+        } else {
+            Write-Error "Could not ping $Name" -ErrorAction Continue
+        }
     }
-}
- 
-Process
- 
-{
-    if($Reachable){
-    Invoke-CimMethod -Namespace "root\ccm\clientSDK" -ClassName CCM_Application -ComputerName $Name -MethodName $Method -Arguments $Arguments
+    
+    Process
+    
+    {
+        if($Reachable){
+        Invoke-CimMethod -Namespace "root\ccm\clientSDK" -ClassName CCM_Application -ComputerName $Name -MethodName $Method -Arguments $Arguments
+        }
     }
-}
+    
+    End {
+        Set-Location $myPWD
+    }
  
-End {}
- 
 }
+Export-ModuleMember Invoke-MECMAppInstall
