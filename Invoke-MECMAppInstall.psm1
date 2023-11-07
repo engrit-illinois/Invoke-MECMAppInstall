@@ -27,10 +27,14 @@ Function Invoke-MECMAppInstall
  
     Param
     (
-         [Parameter(Mandatory=$True, Position=1)] $Computer,
-         [String][Parameter(Mandatory=$True, Position=2)] $AppName,
-         [ValidateSet("Install","Uninstall")]
-         [String][Parameter(Mandatory=$True, Position=3)] $Method
+        [Parameter(Mandatory=$True, Position=1)] $Computer,
+        [String][Parameter(Mandatory=$True, Position=2)] $AppName,
+        [ValidateSet("Install","Uninstall")]
+        [String][Parameter(Mandatory=$True, Position=3)] $Method,
+        [string]$Prefix = $DEFAULT_PREFIX,
+		[string]$SiteCode=$DEFAULT_SITE_CODE,
+		[string]$Provider=$DEFAULT_PROVIDER,
+        [string]$CMPSModulePath="$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1"
     )
  
     Begin {
@@ -38,7 +42,7 @@ Function Invoke-MECMAppInstall
         $myPWD = $PWD.Path
 
         if($null -eq (Get-Module ConfigurationManager)){
-            Connect-ToMECM
+            Connect-ToMECM -Prefix $Prefix -SiteCode $SiteCode -Provider $Provider -CMPSModulePath $CMPSModulePath
         }
         if($null -eq (Get-Module ActiveDirectory)){
             Import-Module ActiveDirectory
