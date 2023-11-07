@@ -1,7 +1,7 @@
-# Adapted from https://timmyit.com/2016/08/08/sccm-and-powershell-force-installuninstall-of-available-software-in-software-center-through-cimwmi-on-a-remote-client/
 
 Function Invoke-MECMAppInstall
 {
+    # Adapted from https://timmyit.com/2016/08/08/sccm-and-powershell-force-installuninstall-of-available-software-in-software-center-through-cimwmi-on-a-remote-client/
  
     Param
     (
