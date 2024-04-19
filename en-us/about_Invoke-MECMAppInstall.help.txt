@@ -1,0 +1,12 @@
+﻿TOPIC
+	about_Invoke-MECMAppInstall
+	
+SHORT DESCRIPTION
+	A short synopsis of Invoke-MECMAppInstall
+
+LONG DESCRIPTION
+	A more detailed description of Invoke-MECMAppInstall,
+	Should tell the user how to get started with this module.
+	
+KEYWORDS
+	module development debugging
