@@ -79,7 +79,8 @@ Function Invoke-MECMAppInstall
     
     {
         if($Reachable){
-        Invoke-CimMethod -Namespace "root\ccm\clientSDK" -ClassName CCM_Application -ComputerName $Name -MethodName $Method -Arguments $Arguments
+            Write-Verbose "Installing $Application on $Name using method $Method"
+            Invoke-CimMethod -Namespace "root\ccm\clientSDK" -ClassName CCM_Application -ComputerName $Name -MethodName $Method -Arguments $Arguments
         }
     }
     
