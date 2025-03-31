@@ -50,12 +50,12 @@ The target remote computer. Can be passed as any of the following three types:
 [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject] (e.g. the result from `Get-CMCollectionMember`)
 [Microsoft.ActiveDirectory.Management.ADComputer] (e.g. the result from `Get-ADComputer`)
 
-### AppName
+### -AppName
 The name of the application to be invoked. Supports wildcards.
 
 Note: This function is only designed to handle one application at a time. If multiple applications are returned by a wildcard query, the command will fail. 
 
-### Method
+### -Method
 Options: Install, Uninstall
 
 Used to declare whether to install or uninstall the given application.
