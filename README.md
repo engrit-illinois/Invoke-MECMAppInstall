@@ -33,7 +33,14 @@ This set of commands remotely installs any application matching "*Fusion\*" on c
 ```powershell
 $comps = Get-ADComputer -Filter { Name -like "meb-0023b-*" }
 
-foreach($comp in $comps){Invoke-MECMAppInstall -Computer $comp.Name -AppName "*Fusion*" -Method Install }
+Invoke-MECMAppInstall -Computer $comps -AppName "*Fusion*" -Method Install
+```
+
+This set of commands remotely installs any application matching "*Fusion\*" on computers matching `meb-0023b-*`
+```powershell
+$comps = Get-ADComputer -Filter { Name -like "meb-0023b-*" }
+
+$comps | Invoke-MECMAppInstall -AppName "*Fusion*" -Method Install
 ```
 
 # Parameters
