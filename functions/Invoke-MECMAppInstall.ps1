@@ -59,8 +59,11 @@ Function Invoke-MECMAppInstall
             Write-Verbose "Applications found: $($Application.Name)"
             Write-Verbose "Applications found: $($Application.Count)"
 
-            if($Application.Id.Count -ne 1){
-                throw "Either 0 or more than 1 application was found matching $($AppName). This cmdlet is only designed for single applications."`
+            if($Application.Id.Count -eq 0){
+                throw "No applications were found matching $($AppName)."`
+            }
+            if($Application.Id.Count -ge 2){
+                throw "More than 1 application was found matching $($AppName). This cmdlet is only designed for single applications."`
             }
     
             $Arguments = @{
