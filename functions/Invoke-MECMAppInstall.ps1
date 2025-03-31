@@ -34,7 +34,7 @@ Function Invoke-MECMAppInstall
             [String],
             [Microsoft.ActiveDirectory.Management.ADComputer],
             [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]) {
-            throw "Unsupported argument type passed to parameter '$Computer'. The type passed was $($Computer.GetType()). The parameter must be of type [String],[Microsoft.ActiveDirectory.Management.ADComputer], or [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]"
+            throw "Unsupported argument type passed to Computer parameter. The type passed was $($Computer.GetType()). The parameter must be of type [String],[Microsoft.ActiveDirectory.Management.ADComputer], or [Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine.WqlResultObject]"
         }
         Write-Verbose "Computer is $Computer"
         Write-Verbose "Computer type is $($Computer.GetType())"
